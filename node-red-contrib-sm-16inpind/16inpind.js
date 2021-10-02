@@ -39,7 +39,7 @@ module.exports = function(RED) {
             var channel = node.channel;
             if (isNaN(channel)) channel = msg.channel;
             channel = parseInt(channel);
-            //var buffcount = parseInt(node.count);
+           
             if (isNaN(stack + 1)) {
                 this.status({fill:"red",shape:"ring",text:"Stack level ("+stack+") value is missing or incorrect"});
                 return;
@@ -62,30 +62,39 @@ module.exports = function(RED) {
             try{
               rawData = node.port.readWordSync(hwAdd, IN_REG );
               
-              if(channel < 1){
-                channel = 1;
+              if(channel < 0){
+                channel = 0;
               }
               if(channel > 16){
                 channel = 16;
               }
-              channel-= 1;//zero based
-              rawData = ~rawData;
-              if( (rawData & mask[channel]) != 0){
-                msg.payload = 1;
-              }
-              else{
-                msg.payload = 0;
+              if( channel > 0){
+                channel-= 1;//zero based
+                rawData = ~rawData;
+                if( (rawData & mask[channel]) != 0){
+                  msg.payload = 1;
+                }else{
+                  msg.payload = 0;
+                }
+              }else{
+                var optoData = 0x0000;
+                var idx = 0;
+                rawData = ~rawData;
+                for(idx = 0; idx < 16; idx++){
+                  if( (rawData & mask[idx]) != 0){
+                  optoData += 1 << idx;
+                  }
+                }
+                msg.payload = optoData;
               }
               node.send(msg);             
             }catch(err) {
                 this.error(err,msg);                          
             }
         });
-
         node.on("close", function() {
             node.port.closeSync();
         });
     }
     RED.nodes.registerType("16inpind", OptoInputNode);
-
 }
