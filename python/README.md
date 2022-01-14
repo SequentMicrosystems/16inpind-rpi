@@ -1,4 +1,4 @@
-# lib16in
+# lib16inpind
 
 This is the python library to control [16- INPUTS card for Raspberry Pi](https://sequentmicrosystems.com/collections/all-io-cards/products/16-universal-inputs-3-240vac-dc-br-8-layer-stackable-card-br-for-raspberry-pi)
 
