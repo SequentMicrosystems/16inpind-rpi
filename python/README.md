@@ -28,7 +28,7 @@ for Python 3.x usge replace last line with:
 
 ## Usage 
 
-Now you can import the lib16in library and use its functions. To test, read the channel 1:
+Now you can import the lib16inpind library and use its functions. To test, read the channel 1:
 
 ```bash
 ~$ python
@@ -36,7 +36,7 @@ Python 2.7.9 (default, Sep 17 2016, 20:26:04)
 [GCC 4.9.2] on linux2
 Type "help", "copyright", "credits" or "license" for more information.
 >>> import lib16inpind
->>> lib16inpind.readCh(1)
+>>> lib16inpind.readCh(0, 1)
 0
 >>>
 ```
