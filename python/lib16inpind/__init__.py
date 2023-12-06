@@ -1,4 +1,4 @@
-import smbus
+import smbus2
 
 DEVICE_ADDRESS = 0x20  # 7 bit address (will be left shifted to add the read write bit)
 INPUTS16_INPORT_REG_ADD = 0
@@ -12,7 +12,7 @@ def readCh(stack, channel):
     stack = 0x07 ^ stack
     if channel < 1 or channel > 16:
         raise ValueError('Invalid channel')
-    bus = smbus.SMBus(1)
+    bus = smbus2.SMBus(1)
     hw_add = DEVICE_ADDRESS + stack
     try:
         val = bus.read_word_data(hw_add, INPUTS16_INPORT_REG_ADD)
@@ -29,7 +29,7 @@ def readAll(stack):
     if stack < 0 or stack > 7:
         raise ValueError('Invalid stack level')
     stack = 0x07 ^ stack
-    bus = smbus.SMBus(1)
+    bus = smbus2.SMBus(1)
     hw_add = DEVICE_ADDRESS + stack
     try:
         val = bus.read_word_data(hw_add, INPUTS16_INPORT_REG_ADD)
