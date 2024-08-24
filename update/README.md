@@ -1,7 +1,7 @@
 # update
 
 This is the [Sequent Microsystems](https://www.sequentmicrosystems.com) [Sixteen LV Digital Inputs 8-Layer Stackable HAT for Raspberry Pi](https://sequentmicrosystems.com/collections/all-io-cards/products/16-universal-inputs-card-for-raspberry-pi)
-firmware update tool.
+firmware update tool. This tool is compatible with hardware version 3.0 and up.
 
 ## Usage
 
