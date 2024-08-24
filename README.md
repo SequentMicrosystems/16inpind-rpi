@@ -31,3 +31,5 @@ If you clone the repository any update can be made with the following commands:
 ```  
 
 ## [Python](https://github.com/SequentMicrosystems/16inpind-rpi/tree/main/python)
+
+##[Firmware Update](https://github.com/SequentMicrosystems/16inpind-rpi/blob/main/update/README.md)
