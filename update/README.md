@@ -10,6 +10,11 @@ firmware update tool. This tool is compatible with hardware version 3.0 and up.
 ~$ cd 16inpind-rpi/update/ 
 ~/16inpind-rpi/update$ ./update 0 
 ``` 
+Or if you are using a 64-bits OS
+
+```bash
+./update64 0
+```
 
 If you already cloned the repository, skip the first step.
 The command will download the newest firmware version from our server and write it  to the board. 
