@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+int doBoardInit(int stack);
+
 int i2cSetup(int addr);
 int i2cMem8Read(int dev, int add, uint8_t* buff, int size);
 int i2cMem8Write(int dev, int add, uint8_t* buff, int size);

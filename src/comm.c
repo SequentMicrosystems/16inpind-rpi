@@ -16,6 +16,7 @@
 #include <sys/ioctl.h>
 #include <linux/i2c-dev.h>
 #include "comm.h"
+#include "data.h"
 
 #define I2C_SLAVE	0x0703
 #define I2C_SMBUS	0x0720	/* SMBus-level access */
@@ -40,6 +41,24 @@
 #define I2C_SMBUS_BLOCK_MAX	32	/* As specified in SMBus standard */
 #define I2C_SMBUS_I2C_BLOCK_MAX	32	/* Not specified but we use same structure */
 
+int doBoardInit(int stack)
+{
+	int dev = 0;
+	int add = 0;
+
+	if ( (stack < 0) || (stack > 7))
+	{
+		printf("Invalid stack level [0..7]!");
+		return ERROR;
+	}
+	add = (stack + INPUT16_HW_I2C_BASE_ADD) ^ 0x07;
+	dev = i2cSetup(add);
+	if (dev == -1)
+	{
+		return ERROR;
+	}
+	return dev;
+}
 
 int i2cSetup(int addr)
 {

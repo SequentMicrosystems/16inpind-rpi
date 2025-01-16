@@ -2,6 +2,7 @@
 #define IN_16_H_
 
 #include <stdint.h>
+#include "cli.h"
 
 #define	UNU	__attribute__((unused))
 
@@ -29,17 +30,6 @@ typedef enum
 	STATE_COUNT
 } OutStateEnumType;
 
-typedef struct
-{
- const char* name;
- const int namePos;
- void(*pFunc)(int, char**);
- const char* help;
- const char* usage1;
- const char* usage2;
- const char* example;
-}CliCmdType;
-
-const CliCmdType* gCmdArray[];
+extern const CliCmdType CMD_READ;
 
 #endif //IN_16_H_
