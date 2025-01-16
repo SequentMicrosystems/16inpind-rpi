@@ -28,18 +28,21 @@ Access level Read Only, Size 16 bits
 | Device function | Register Address | Modbus Address |
 | --- | --- | --- |
 | DI_IN1 | 10001 | 0x00 | 
-| DI_IN1 | 10001 | 0x00 | 
-| DI_IN1 | 10001 | 0x00 | 
-| DI_IN1 | 10001 | 0x00 | 
-| DI_IN1 | 10001 | 0x00 |
-| DI_IN1 | 10001 | 0x00 |
-| DI_IN1 | 10001 | 0x00 |
-| DI_IN1 | 10001 | 0x00 |
-| DI_IN1 | 10001 | 0x00 |
-| DI_IN1 | 10001 | 0x00 |
-| DI_IN1 | 10001 | 0x00 |
-| DI_IN1 | 10001 | 0x00 |
-| DI_IN1 | 10001 | 0x00 |
+| DI_IN2 | 10002 | 0x01 | 
+| DI_IN3 | 10003 | 0x02 | 
+| DI_IN4 | 10004 | 0x03 | 
+| DI_IN5 | 10005 | 0x04 |
+| DI_IN6 | 10006 | 0x05 |
+| DI_IN7 | 10007 | 0x06 |
+| DI_IN8 | 10008 | 0x07 |
+| DI_IN9 | 10009 | 0x08 |
+| DI_IN10 | 100010 | 0x09 |
+| DI_IN11 | 100011 | 0x0a |
+| DI_IN12 | 100012 | 0x0b |
+| DI_IN13 | 100013 | 0x0c |
+| DI_IN14 | 100014 | 0x0d |
+| DI_IN15 | 100015 | 0x0e |
+| DI_IN16 | 100016 | 0x0f |
 
 ## Function codes implemented
 
