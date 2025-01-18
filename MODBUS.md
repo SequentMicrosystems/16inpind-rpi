@@ -2,7 +2,8 @@
 
 # Modbus
 
-The [Sixteen LV Digital Inputs 8-Layer Stackable HAT for Raspberry Pi](https://sequentmicrosystems.com/collections/all-io-cards/products/16-universal-inputs-card-for-raspberry-pi)  can be accessed through Modbus RTU protocol over RS-485 port.
+The [Sixteen LV Digital Inputs 8-Layer Stackable HAT for Raspberry Pi](https://sequentmicrosystems.com/collections/all-io-cards/products/16-universal-inputs-card-for-raspberry-pi)  can be accessed through Modbus RTU protocol over RS-485 port. Checkout the usage example on our [website](https://sequentmicrosystems.com/blogs/blog/using-sixteen-lv-digital-inputs-card-as-a-modbus-device). 
+
 You can set up the RS-485 port with **16inpind** command.
 
 Example:
