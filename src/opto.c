@@ -86,7 +86,7 @@ int optoEdgeGet(int dev, uint8_t ch, uint8_t *val)
 		printf("Invalid opto ch nr!\n");
 		return ERROR ;
 	}
-	uint8_t buf[2];
+	uint8_t buf[4];
 	if (OK != i2cMem8Read(dev, I2C_MEM_OPTO_IT_RISING_ADD, buf, 4))
 	{
 		return ERROR ;
@@ -118,8 +118,8 @@ int optoEdgeSet(int dev, uint8_t ch, uint8_t val)
 	{
 		return ERROR ;
 	}
-	uint8_t rising = 0; //buf[0];
-	uint8_t falling = 0; //buf[1];
+	uint16_t rising = 0; //buf[0];
+	uint16_t falling = 0; //buf[1];
 	memcpy(&rising, buf, 2);
 	memcpy(&falling, &buf[2], 2);
 	uint32_t mask = 1 << (ch - 1);
