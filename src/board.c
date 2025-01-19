@@ -4,6 +4,11 @@
 #include <stdio.h>
 #include <string.h>
 
+#define VERSION_BASE	(int)1
+#define VERSION_MAJOR	(int)1
+#define VERSION_MINOR	(int)2
+
+
 static int doHelp(int argc, char *argv[]);
 const CliCmdType CMD_HELP =
 {
@@ -78,8 +83,8 @@ static int doVersion(int argc, char *argv[])
 	(void)argc;
 	(void)argv;
 	printf(
-		"16inpind command line interface v%d.%d Copyright (c) 2016 - 2025 Sequent Microsystems\n",
-		HW_MAJOR, HW_MINOR);
+		"16inpind command line interface v%d.%d.%d Copyright (c) 2016 - 2025 Sequent Microsystems\n",
+		VERSION_BASE, VERSION_MAJOR, VERSION_MINOR);
 	printf("\nThis is free software with ABSOLUTELY NO WARRANTY.\n");
 	printf("For details type: 16inpind -warranty\n");
 	return 0;

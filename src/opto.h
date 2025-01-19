@@ -14,6 +14,8 @@ extern const CliCmdType CMD_OPTO_ENC_CNT_READ;
 extern const CliCmdType CMD_OPTO_ENC_CNT_RESET;
 extern const CliCmdType CMD_OPTO_FREQUENCY_READ;
 extern const CliCmdType CMD_OPTO_PWM_READ;
+extern const CliCmdType CMD_OPTO_INT_WR;
+extern const CliCmdType CMD_OPTO_INT_RD;
 
 int doOptoRead(int argc, char *argv[]);
 int doOptoEdgeWrite(int argc, char *argv[]);
@@ -26,5 +28,6 @@ int doOptoEncoderCntRead(int argc, char *argv[]);
 int doOptoEncoderCntReset(int argc, char *argv[]);
 int doOptoPWMRead(int argc, char *argv[]);
 int doOptoFreqRead(int argc, char *argv[]);
-
+int doOptoIntEn(int argc, char *argv[]);
+int doOptoIntRd(int argc, char *argv[]);
 #endif /* OPTO_H */

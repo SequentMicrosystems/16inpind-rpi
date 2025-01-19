@@ -42,12 +42,14 @@ int optoChGet(int dev, uint8_t ch, State *state)
 		printf("Invalid opto ch nr!\n");
 		return ERROR ;
 	}
-	uint8_t buf[1];
-	if (OK != i2cMem8Read(dev, I2C_MEM_OPTO, buf, 1))
+	uint8_t buf[2];
+	if (OK != i2cMem8Read(dev, I2C_MEM_OPTO, buf, 2))
 	{
 		return ERROR ;
 	}
-	if (buf[0] & (1 << (ch - 1)))
+	uint16_t val = 0;
+	memcpy(&val, buf, 2);
+	if (val & (1 << (ch - 1)))
 	{
 		*state = ON;
 	}
@@ -60,16 +62,16 @@ int optoChGet(int dev, uint8_t ch, State *state)
 
 int optoGet(int dev, int *val)
 {
-	uint8_t buff[1];
+	uint8_t buff[2];
 	if (NULL == val)
 	{
 		return ERROR ;
 	}
-	if (OK != i2cMem8Read(dev, I2C_MEM_OPTO, buff, 1))
+	if (OK != i2cMem8Read(dev, I2C_MEM_OPTO, buff, 2))
 	{
 		return ERROR ;
 	}
-	*val = buff[0];
+	memcpy(val, buff, 2);
 	return OK ;
 }
 
@@ -85,12 +87,14 @@ int optoEdgeGet(int dev, uint8_t ch, uint8_t *val)
 		return ERROR ;
 	}
 	uint8_t buf[2];
-	if (OK != i2cMem8Read(dev, I2C_MEM_OPTO_IT_RISING_ADD, buf, 2))
+	if (OK != i2cMem8Read(dev, I2C_MEM_OPTO_IT_RISING_ADD, buf, 4))
 	{
 		return ERROR ;
 	}
-	uint8_t rising = buf[0];
-	uint8_t falling = buf[1];
+	uint16_t rising = 0; //buf[0];
+	uint16_t falling = 0; //buf[1];
+	memcpy(&rising, buf, 2);
+	memcpy(&falling, &buf[2], 2);
 	*val = 0;
 	if (rising & (1 << (ch - 1)))
 	{
@@ -109,13 +113,15 @@ int optoEdgeSet(int dev, uint8_t ch, uint8_t val)
 	{
 		return ERROR ;
 	}
-	uint8_t buf[2];
-	if (OK != i2cMem8Read(dev, I2C_MEM_OPTO_IT_RISING_ADD, buf, 2))
+	uint8_t buf[4];
+	if (OK != i2cMem8Read(dev, I2C_MEM_OPTO_IT_RISING_ADD, buf, 4))
 	{
 		return ERROR ;
 	}
-	uint8_t rising = buf[0];
-	uint8_t falling = buf[1];
+	uint8_t rising = 0; //buf[0];
+	uint8_t falling = 0; //buf[1];
+	memcpy(&rising, buf, 2);
+	memcpy(&falling, &buf[2], 2);
 	uint32_t mask = 1 << (ch - 1);
 	if (val & 1 << 0)
 	{ //check rising
@@ -133,9 +139,12 @@ int optoEdgeSet(int dev, uint8_t ch, uint8_t val)
 	{
 		falling &= ~mask;
 	}
-	buf[0] = rising;
-	buf[1] = falling;
-	if (OK != i2cMem8Write(dev, I2C_MEM_OPTO_IT_RISING_ADD, buf, 2))
+	//buf[0] = rising;
+	//buf[1] = falling;
+	memcpy(buf, &rising, 2);
+	memcpy(&buf[2], &falling, 2);
+
+	if (OK != i2cMem8Write(dev, I2C_MEM_OPTO_IT_RISING_ADD, buf, 4))
 	{
 		return ERROR ;
 	}
@@ -305,6 +314,65 @@ int optoEncRstCnt(int dev, uint8_t ch)
 	if (OK != i2cMem8Write(dev, I2C_MEM_OPTO_ENC_CNT_RST_ADD, &ch, 1))
 	{
 		return ERROR ;
+	}
+	return OK ;
+}
+
+int optoIntSet(int dev, uint8_t ch, uint8_t val)
+{
+	if (badOptoCh(ch))
+	{
+		return ERROR ;
+	}
+	uint8_t buf[2];
+	if (OK != i2cMem8Read(dev, I2C_MEM_EXTI_EN_ADD, buf, 2))
+	{
+		return ERROR ;
+	}
+	uint16_t interrupt = 0;
+	memcpy(&interrupt, buf, 2);
+	
+	uint32_t mask = 1 << (ch - 1);
+	if (val)
+	{ 
+		interrupt |= mask;
+	}
+	else
+	{
+		interrupt &= ~mask;
+	}
+	memcpy(buf, &interrupt, 2);
+	if (OK != i2cMem8Write(dev, I2C_MEM_EXTI_EN_ADD, buf, 2))
+	{
+		return ERROR ;
+	}
+	return OK ;
+}
+
+int optoIntRead(int dev, uint8_t ch, uint8_t *val)
+{
+	if (badOptoCh(ch))
+	{
+		return ERROR ;
+	}
+	if (NULL == val)
+	{
+		return ERROR ;
+	}
+	uint8_t buf[2];
+	if (OK != i2cMem8Read(dev, I2C_MEM_EXTI_EN_ADD, buf, 2))
+	{
+		return ERROR ;
+	}
+	uint16_t interrupt = 0;
+	memcpy(&interrupt, buf, 2);
+	if ( (1 << (ch - 1)) & interrupt)
+	{
+		*val = 1;
+	}
+	else
+	{
+		*val = 0;
 	}
 	return OK ;
 }
@@ -748,5 +816,112 @@ int doOptoPWMRead(int argc, char *argv[])
 		return ERROR ;
 	}
 	printf("%.02f\n", val);
+	return OK ;
+}
+
+const CliCmdType CMD_OPTO_INT_WR =
+{
+	"optintwr",
+	2,
+	&doOptoIntEn,
+	"  optintwr         Enable/Disable interrupt generation for opto inputs change \n",
+	"  Usage:           "PROGRAM_NAME" <id> optintwr <channel> <0/1>\n"
+	"  Usage:           "PROGRAM_NAME" <id> optintwr <bitmap>\n",
+	"  Example:         "PROGRAM_NAME" 0 optintwr 2 1; Enable interrupt generation on input channel 2\n"
+};
+int doOptoIntEn(int argc, char *argv[])
+{
+	if (argc != 5 && argc != 4)
+	{
+		return ARG_CNT_ERR;
+	}
+	int dev = doBoardInit(atoi(argv[1]));
+	if (dev <= 0)
+	{
+		return ERROR ;
+	}
+	if(argc == 5)
+	{
+		uint8_t channel = 0;
+		channel = atoi(argv[3]);
+		if (badOptoCh(channel))
+		{
+			return ARG_RANGE_ERROR;
+		}
+		uint8_t enable = 0;
+		enable = atoi(argv[4]);
+		if (OK != optoIntSet(dev, channel, enable))
+		{
+			printf("Fail to change interrupt settings!\n");
+			return ERROR ;
+		}
+	}
+	else //argc == 4
+	{
+		uint16_t val = 0;
+		val = 0xffff & atoi(argv[3]);
+		uint8_t buff[2];
+		memcpy(buff, &val, 2);
+		if (OK != i2cMem8Write(dev, I2C_MEM_EXTI_EN_ADD, buff, 2))
+		{
+			printf("Fail to change interrupt settings!\n");
+			return ERROR ;
+		}
+	}
+	return OK ;
+}
+
+const CliCmdType CMD_OPTO_INT_RD =
+{
+	"optintrd",
+	2,
+	&doOptoIntRd,
+	"  optintrd         Display interrupt generation settings for opto inputs\n",
+	"  Usage:           "PROGRAM_NAME" <id> optintrd <channel>\n"
+	"  Usage:           "PROGRAM_NAME" <id> optintrd\n",
+	"  Example:         "PROGRAM_NAME" 0 optintrd 2; Return interrupt generation settings on input channel 2\n"
+};
+int doOptoIntRd(int argc, char *argv[])
+{
+	if (argc != 3 && argc != 4)
+	{
+		return ARG_CNT_ERR;
+	}
+	int dev = doBoardInit(atoi(argv[1]));
+	if (dev <= 0)
+	{
+		return ERROR ;
+	}
+	if(argc == 4)
+	{
+		uint8_t channel = 0;
+		channel = atoi(argv[3]);
+		if (badOptoCh(channel))
+		{
+			return ARG_RANGE_ERROR;
+		}
+		uint8_t enable = 0;
+		
+		if (OK != optoIntRead(dev, channel, &enable))
+		{
+			printf("Fail to read interrupt settings!\n");
+			return ERROR ;
+		}
+		printf("%d\n",(int)enable);
+	}
+	else //argc == 3
+	{
+		uint16_t val = 0;
+		
+		uint8_t buff[2];
+		
+		if (OK != i2cMem8Read(dev, I2C_MEM_EXTI_EN_ADD, buff, 2))
+		{
+			printf("Fail to change interrupt settings!\n");
+			return ERROR ;
+		}
+		memcpy(&val, buff, 2);
+		printf("%d\n", (int)val);
+	}
 	return OK ;
 }

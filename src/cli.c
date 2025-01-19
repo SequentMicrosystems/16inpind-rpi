@@ -41,5 +41,7 @@ const CliCmdType* gCmdArray[] =
 	&CMD_WDT_SET_OFF_PERIOD,
 	&CMD_WDT_GET_RESET_COUNT,
 	&CMD_WDT_CLR_RESET_COUNT,
+	&CMD_OPTO_INT_WR,
+	&CMD_OPTO_INT_RD,
 	0
 }; //null terminated array of cli structure pointers
