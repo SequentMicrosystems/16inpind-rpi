@@ -1,3 +1,6 @@
+# Main binary
+16inpind
+
 # Prerequisites
 *.d
 
@@ -53,6 +56,11 @@ dkms.conf
 
 #python build dirs
 
-/python/build/
-/python/dist/
-/python/SM16inpind.egg-info/
+python/build/
+python/dist/
+python/*.egg-info/
+
+python/docs/doctrees/
+python/docs/markdown/
+
+__pycache__/

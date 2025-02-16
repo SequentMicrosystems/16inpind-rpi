@@ -9,22 +9,23 @@
 #pip install multiio
 
 
-#with open("README.md", 'r') as f:
-#    long_description = f.read()
+with open("README.md", 'r') as f:
+    long_description = f.read()
 
 from setuptools import setup, find_packages
 setup(
     name='SM16inpind',
     packages=find_packages(),
-    version='1.0.1',
+    version='1.1.0',
     license='MIT',
     description='Library to control 16inpind Automation Card',
-    #long_description=long_description,
-    #long_description_content_type="text/markdown",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     author='Sequent Microsystems',
     author_email='olcitu@gmail.com',
     url='https://sequentmicrosystems.com',
-    #keywords=['industrial', 'raspberry', 'power', '4-20mA', '0-10V', 'optoisolated'],
+    keywords=['industrial', 'raspberry-pi', 'automation', 'digital-inputs', 'optoisolated-inputs', 
+              'industrial-automation', 'gpio', 'input-monitoring', 'raspberry', 'rpi'],
     install_requires=[
         "smbus2",
         ],
