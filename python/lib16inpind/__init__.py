@@ -1,31 +1,11 @@
 import smbus2
 from typing import Union, Optional
 
-# Device and register addresses
-DEVICE_ADDRESS = 0x20  # 7 bit address (will be left shifted to add the read write bit)
-INPUTS16_INPORT_REG_ADD = 0x00
-I2C_MEM_LED = 0x02
-I2C_MEM_LED_MODE = 0x04
-I2C_MEM_PWR_LED_MODE = 0x06
-I2C_MEM_WDT_RESET_ADD = 0x10
-I2C_MEM_WDT_INTERVAL_SET_ADD = 0x12
-I2C_MEM_WDT_INTERVAL_GET_ADD = 0x14
-I2C_MEM_WDT_INIT_INTERVAL_SET_ADD = 0x16
-I2C_MEM_WDT_INIT_INTERVAL_GET_ADD = 0x18
-I2C_MEM_WDT_OFF_INTERVAL_SET_ADD = 0x1A
-I2C_MEM_WDT_OFF_INTERVAL_GET_ADD = 0x1C
-I2C_MEM_WDT_RESET_COUNT_ADD = 0x1E
-I2C_MODBUS_SETINGS_ADD = 0x20
-I2C_MEM_OPTO = 0x30
-I2C_MEM_OPTO_IT_RISING_ADD = 0x32
-I2C_MEM_OPTO_IT_FALLING_ADD = 0x34
-I2C_MEM_OPTO_CNT = 0x36
-I2C_MEM_OPTO_ENC = 0x38
-I2C_MEM_OPTO_ENC_CNT = 0x3A
-I2C_MEM_OPTO_FREQ = 0x3C
-I2C_MEM_OPTO_PWM = 0x3E
+import lib16inpind.lib16inpind_data as data
 
-WDT_RESET_SIGNATURE = 0xCA
+I2C_MEM = data.I2C_MEM
+DEVICE_ADDRESS = data.DEVICE_ADDRESS
+WDT_RESET_SIGNATURE = data.WDT_RESET_SIGNATURE
 
 # Pin masks for 16-bit operations  
 pinMask = [0x8000, 0x4000, 0x2000, 0x1000, 0x0800, 0x0400, 0x0200, 0x0100, 
@@ -68,7 +48,7 @@ def readCh(stack, channel):
     bus = smbus2.SMBus(1)
     hw_add = DEVICE_ADDRESS + stack
     try:
-        val = bus.read_word_data(hw_add, INPUTS16_INPORT_REG_ADD)
+        val = bus.read_word_data(hw_add, I2C_MEM.INPORT_REG)
     except Exception as e:
         bus.close()
         raise Exception(e)
@@ -102,7 +82,7 @@ def readAll(stack):
     bus = smbus2.SMBus(1)
     hw_add = DEVICE_ADDRESS + stack
     try:
-        val = bus.read_word_data(hw_add, INPUTS16_INPORT_REG_ADD)
+        val = bus.read_word_data(hw_add, I2C_MEM.INPORT_REG)
     except Exception as e:
         bus.close()
         raise Exception(e)
@@ -136,12 +116,12 @@ def getLed(stack: int, channel: int) -> int:
     hw_add = DEVICE_ADDRESS + stack
     
     try:
-        val = bus.read_word_data(hw_add, I2C_MEM_LED)
+        val = bus.read_word_data(hw_add, I2C_MEM.LED)
     except Exception as e:
         bus.close()
         raise Exception(e)
     bus.close()
-    
+
     return 1 if val & pinMask[channel-1] else 0
 
 def setLed(stack: int, channel: int, state: int) -> None:
@@ -167,12 +147,12 @@ def setLed(stack: int, channel: int, state: int) -> None:
     hw_add = DEVICE_ADDRESS + stack
     
     try:
-        val = bus.read_word_data(hw_add, I2C_MEM_LED)
+        val = bus.read_word_data(hw_add, I2C_MEM.LED)
         if state:
             val |= pinMask[channel-1]
         else:
             val &= ~pinMask[channel-1]
-        bus.write_word_data(hw_add, I2C_MEM_LED, val)
+        bus.write_word_data(hw_add, I2C_MEM.LED, val)
     except Exception as e:
         bus.close()
         raise Exception(e)
@@ -201,7 +181,7 @@ def getLedMode(stack: int, channel: int) -> int:
     hw_add = DEVICE_ADDRESS + stack
     
     try:
-        val = bus.read_word_data(hw_add, I2C_MEM_LED_MODE)
+        val = bus.read_word_data(hw_add, I2C_MEM.LED_MODE)
         mode = (val >> ((channel-1)*2)) & 0x03
     except Exception as e:
         bus.close()
@@ -233,10 +213,10 @@ def setLedMode(stack: int, channel: int, mode: int) -> None:
     hw_add = DEVICE_ADDRESS + stack
     
     try:
-        val = bus.read_word_data(hw_add, I2C_MEM_LED_MODE)
+        val = bus.read_word_data(hw_add, I2C_MEM.LED_MODE)
         val &= ~(0x03 << ((channel-1)*2))
         val |= (mode << ((channel-1)*2))
-        bus.write_word_data(hw_add, I2C_MEM_LED_MODE, val)
+        bus.write_word_data(hw_add, I2C_MEM.LED_MODE, val)
     except Exception as e:
         bus.close()
         raise Exception(e)
@@ -262,7 +242,7 @@ def getPowerLedMode(stack: int) -> int:
     hw_add = DEVICE_ADDRESS + stack
     
     try:
-        val = bus.read_byte_data(hw_add, I2C_MEM_PWR_LED_MODE)
+        val = bus.read_byte_data(hw_add, I2C_MEM.PWR_LED_MODE)
     except Exception as e:
         bus.close()
         raise Exception(e)
@@ -290,7 +270,7 @@ def setPowerLedMode(stack: int, mode: int) -> None:
     hw_add = DEVICE_ADDRESS + stack
     
     try:
-        bus.write_byte_data(hw_add, I2C_MEM_PWR_LED_MODE, mode)
+        bus.write_byte_data(hw_add, I2C_MEM.PWR_LED_MODE, mode)
     except Exception as e:
         bus.close()
         raise Exception(e)
@@ -313,7 +293,7 @@ def wdtReload(stack: int) -> None:
     hw_add = DEVICE_ADDRESS + stack
     
     try:
-        bus.write_byte_data(hw_add, I2C_MEM_WDT_RESET_ADD, WDT_RESET_SIGNATURE)
+        bus.write_byte_data(hw_add, I2C_MEM.WDT_RESET, WDT_RESET_SIGNATURE)
     except Exception as e:
         bus.close()
         raise Exception(e)
@@ -339,7 +319,7 @@ def getWdtPeriod(stack: int) -> int:
     hw_add = DEVICE_ADDRESS + stack
     
     try:
-        val = bus.read_word_data(hw_add, I2C_MEM_WDT_INTERVAL_GET_ADD)
+        val = bus.read_word_data(hw_add, I2C_MEM.WDT_INTERVAL_GET)
     except Exception as e:
         bus.close()
         raise Exception(e)
@@ -367,7 +347,7 @@ def setWdtPeriod(stack: int, period: int) -> None:
     hw_add = DEVICE_ADDRESS + stack
     
     try:
-        bus.write_word_data(hw_add, I2C_MEM_WDT_INTERVAL_SET_ADD, period)
+        bus.write_word_data(hw_add, I2C_MEM.WDT_INTERVAL_SET, period)
     except Exception as e:
         bus.close()
         raise Exception(e)
@@ -393,7 +373,7 @@ def getWdtInitPeriod(stack: int) -> int:
     hw_add = DEVICE_ADDRESS + stack
     
     try:
-        val = bus.read_word_data(hw_add, I2C_MEM_WDT_INIT_INTERVAL_GET_ADD)
+        val = bus.read_word_data(hw_add, I2C_MEM.WDT_INIT_INTERVAL_GET)
     except Exception as e:
         bus.close()
         raise Exception(e)
@@ -421,7 +401,7 @@ def setWdtInitPeriod(stack: int, period: int) -> None:
     hw_add = DEVICE_ADDRESS + stack
     
     try:
-        bus.write_word_data(hw_add, I2C_MEM_WDT_INIT_INTERVAL_SET_ADD, period)
+        bus.write_word_data(hw_add, I2C_MEM.WDT_INIT_INTERVAL_SET, period)
     except Exception as e:
         bus.close()
         raise Exception(e)
@@ -447,7 +427,7 @@ def getWdtOffPeriod(stack: int) -> int:
     hw_add = DEVICE_ADDRESS + stack
     
     try:
-        val = bus.read_word_data(hw_add, I2C_MEM_WDT_OFF_INTERVAL_GET_ADD)
+        val = bus.read_word_data(hw_add, I2C_MEM.WDT_POWER_OFF_INTERVAL_GET)
     except Exception as e:
         bus.close()
         raise Exception(e)
@@ -475,7 +455,7 @@ def setWdtOffPeriod(stack: int, period: int) -> None:
     hw_add = DEVICE_ADDRESS + stack
     
     try:
-        bus.write_word_data(hw_add, I2C_MEM_WDT_OFF_INTERVAL_SET_ADD, period)
+        bus.write_word_data(hw_add, I2C_MEM.WDT_POWER_OFF_INTERVAL_SET, period)
     except Exception as e:
         bus.close()
         raise Exception(e)
@@ -501,7 +481,7 @@ def getWdtResetCount(stack: int) -> int:
     hw_add = DEVICE_ADDRESS + stack
     
     try:
-        val = bus.read_word_data(hw_add, I2C_MEM_WDT_RESET_COUNT_ADD)
+        val = bus.read_word_data(hw_add, I2C_MEM.WDT_RESET_COUNT)
     except Exception as e:
         bus.close()
         raise Exception(e)
@@ -532,7 +512,7 @@ def getOpto(stack: int, channel: int) -> int:
     hw_add = DEVICE_ADDRESS + stack
     
     try:
-        val = bus.read_word_data(hw_add, I2C_MEM_OPTO)
+        val = bus.read_word_data(hw_add, I2C_MEM.OPTO)
     except Exception as e:
         bus.close()
         raise Exception(e)
@@ -560,7 +540,7 @@ def getOptoAll(stack: int) -> int:
     hw_add = DEVICE_ADDRESS + stack
     
     try:
-        val = bus.read_word_data(hw_add, I2C_MEM_OPTO)
+        val = bus.read_word_data(hw_add, I2C_MEM.OPTO)
     except Exception as e:
         bus.close()
         raise Exception(e)
@@ -594,7 +574,7 @@ def getOptoEdge(stack: int, channel: int, edge: int) -> int:
     hw_add = DEVICE_ADDRESS + stack
     
     try:
-        addr = I2C_MEM_OPTO_IT_FALLING_ADD if edge == 0 else I2C_MEM_OPTO_IT_RISING_ADD
+        addr = I2C_MEM.OPTO_IT_FALLING if edge == 0 else I2C_MEM.OPTO_IT_RISING
         val = bus.read_word_data(hw_add, addr)
     except Exception as e:
         bus.close()
@@ -629,7 +609,7 @@ def setOptoEdge(stack: int, channel: int, edge: int, state: int) -> None:
     hw_add = DEVICE_ADDRESS + stack
     
     try:
-        addr = I2C_MEM_OPTO_IT_FALLING_ADD if edge == 0 else I2C_MEM_OPTO_IT_RISING_ADD
+        addr = I2C_MEM.OPTO_IT_FALLING if edge == 0 else I2C_MEM.OPTO_IT_RISING
         val = bus.read_word_data(hw_add, addr)
         if state:
             val |= pinMask[channel-1]
@@ -664,7 +644,7 @@ def getOptoCount(stack: int, channel: int) -> int:
     hw_add = DEVICE_ADDRESS + stack
     
     try:
-        val = bus.read_word_data(hw_add, I2C_MEM_OPTO_CNT + (channel-1)*2)
+        val = bus.read_word_data(hw_add, I2C_MEM.OPTO_EDGE_COUNT_ADD + (channel-1)*2)
     except Exception as e:
         bus.close()
         raise Exception(e)
@@ -692,7 +672,7 @@ def resetOptoCount(stack: int, channel: int) -> None:
     hw_add = DEVICE_ADDRESS + stack
     
     try:
-        bus.write_word_data(hw_add, I2C_MEM_OPTO_CNT + (channel-1)*2, 0)
+        bus.write_word_data(hw_add, I2C_MEM.OPTO_CNT_RST, 0)
     except Exception as e:
         bus.close()
         raise Exception(e)
@@ -721,7 +701,7 @@ def getOptoEncoder(stack: int, channel: int) -> int:
     hw_add = DEVICE_ADDRESS + stack
     
     try:
-        val = bus.read_word_data(hw_add, I2C_MEM_OPTO_ENC)
+        val = bus.read_word_data(hw_add, I2C_MEM.OPTO_ENC_ENABLE_ADD)
     except Exception as e:
         bus.close()
         raise Exception(e)
@@ -752,12 +732,12 @@ def setOptoEncoder(stack: int, channel: int, state: int) -> None:
     hw_add = DEVICE_ADDRESS + stack
     
     try:
-        val = bus.read_word_data(hw_add, I2C_MEM_OPTO_ENC)
+        val = bus.read_word_data(hw_add, I2C_MEM.OPTO_ENC_ENABLE_ADD)
         if state:
             val |= (1 << ((channel-1)//2))
         else:
             val &= ~(1 << ((channel-1)//2))
-        bus.write_word_data(hw_add, I2C_MEM_OPTO_ENC, val)
+        bus.write_word_data(hw_add, I2C_MEM.OPTO_ENC_ENABLE_ADD, val)
     except Exception as e:
         bus.close()
         raise Exception(e)
@@ -786,7 +766,7 @@ def getOptoFrequency(stack: int, channel: int) -> int:
     hw_add = DEVICE_ADDRESS + stack
     
     try:
-        val = bus.read_word_data(hw_add, I2C_MEM_OPTO_FREQ + (channel-1)*2)
+        val = bus.read_word_data(hw_add, I2C_MEM.IN_FREQENCY + (channel-1)*2)
     except Exception as e:
         bus.close()
         raise Exception(e)
@@ -817,10 +797,135 @@ def getOptoPWM(stack: int, channel: int) -> float:
     hw_add = DEVICE_ADDRESS + stack
     
     try:
-        val = bus.read_word_data(hw_add, I2C_MEM_OPTO_PWM + (channel-1)*2)
+        val = bus.read_word_data(hw_add, I2C_MEM.PWM_IN_FILL + (channel-1)*2)
     except Exception as e:
         bus.close()
         raise Exception(e)
     bus.close()
     
     return val / 65535 * 100
+
+def setOptoInterrupt(stack: int, channel: int, enabled: bool) -> None:
+    """Enable/disable interrupts for an opto-isolated input
+    
+    Args:
+        stack: Board stack level (0-7)
+        channel: Input channel number (1-16)
+        enabled: True to enable interrupts, False to disable
+        
+    Raises:
+        ValueError: If invalid parameters
+    """
+    if stack < 0 or stack > 7:
+        raise ValueError('Invalid stack level')
+    if channel < 1 or channel > 16:
+        raise ValueError('Invalid channel')
+        
+    stack = 0x07 ^ stack
+    bus = smbus2.SMBus(1)
+    hw_add = DEVICE_ADDRESS + stack
+    
+    try:
+        # Read current interrupt mask
+        val = bus.read_word_data(hw_add, I2C_MEM.EXTI_EN)
+        
+        # Modify bit for specified channel
+        if enabled:
+            val |= pinMask[channel-1] 
+        else:
+            val &= ~pinMask[channel-1]
+            
+        # Write back updated mask    
+        bus.write_word_data(hw_add, I2C_MEM.EXTI_EN, val)
+        
+    except Exception as e:
+        bus.close()
+        raise Exception(e)
+    bus.close()
+
+def getOptoInterrupt(stack: int, channel: int) -> bool:
+    """Get interrupt enable state for an opto-isolated input
+    
+    Args:
+        stack: Board stack level (0-7)
+        channel: Input channel number (1-16)
+        
+    Returns:
+        bool: True if interrupts enabled, False if disabled
+        
+    Raises:
+        ValueError: If invalid parameters
+    """
+    if stack < 0 or stack > 7:
+        raise ValueError('Invalid stack level')
+    if channel < 1 or channel > 16:
+        raise ValueError('Invalid channel')
+        
+    stack = 0x07 ^ stack
+    bus = smbus2.SMBus(1)
+    hw_add = DEVICE_ADDRESS + stack
+    
+    try:
+        # Read interrupt mask
+        val = bus.read_word_data(hw_add, I2C_MEM.EXTI_EN)
+    except Exception as e:
+        bus.close()
+        raise Exception(e)
+    bus.close()
+    
+    # Return true if bit is set for channel
+    return bool(val & pinMask[channel-1])
+
+def setOptoInterruptMask(stack: int, mask: int) -> None:
+    """Set interrupt enable mask for all opto-isolated inputs
+    
+    Args:
+        stack: Board stack level (0-7)
+        mask: 16-bit mask (1=enabled, 0=disabled)
+        
+    Raises:
+        ValueError: If invalid parameters
+    """
+    if stack < 0 or stack > 7:
+        raise ValueError('Invalid stack level')
+    if mask < 0 or mask > 0xFFFF:
+        raise ValueError('Invalid mask')
+        
+    stack = 0x07 ^ stack
+    bus = smbus2.SMBus(1)
+    hw_add = DEVICE_ADDRESS + stack
+    
+    try:
+        bus.write_word_data(hw_add, I2C_MEM.EXTI_EN, mask)
+    except Exception as e:
+        bus.close()
+        raise Exception(e)
+    bus.close()
+
+def getOptoInterruptMask(stack: int) -> int:
+    """Get interrupt enable mask for all opto-isolated inputs
+    
+    Args:
+        stack: Board stack level (0-7)
+        
+    Returns:
+        int: 16-bit mask with interrupt enable states
+        
+    Raises:
+        ValueError: If invalid stack
+    """
+    if stack < 0 or stack > 7:
+        raise ValueError('Invalid stack level')
+        
+    stack = 0x07 ^ stack
+    bus = smbus2.SMBus(1)
+    hw_add = DEVICE_ADDRESS + stack
+    
+    try:
+        val = bus.read_word_data(hw_add, I2C_MEM.EXTI_EN)
+    except Exception as e:
+        bus.close()
+        raise Exception(e)
+    bus.close()
+    
+    return val

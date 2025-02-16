@@ -89,7 +89,7 @@ Read all input pins on the device.
 
 inputs = lib16inpind.readAll(0) # Read all inputs from card at stack level 0
 
-### getLed(stack: int, channel: int) → int
+### getLed(stack: int, channel: int)
 
 Get the state of an LED channel
 
@@ -103,7 +103,7 @@ Get the state of an LED channel
 * **Raises:**
   **ValueError** – If invalid stack or channel
 
-### setLed(stack: int, channel: int, state: int) → None
+### setLed(stack: int, channel: int, state: int)
 
 Set the state of an LED channel
 
@@ -114,7 +114,7 @@ Set the state of an LED channel
 * **Raises:**
   **ValueError** – If invalid stack, channel or state
 
-### getLedMode(stack: int, channel: int) → int
+### getLedMode(stack: int, channel: int)
 
 Get the mode of an LED channel
 
@@ -128,7 +128,7 @@ Get the mode of an LED channel
 * **Raises:**
   **ValueError** – If invalid stack or channel
 
-### setLedMode(stack: int, channel: int, mode: int) → None
+### setLedMode(stack: int, channel: int, mode: int)
 
 Set the mode of an LED channel
 
@@ -139,7 +139,7 @@ Set the mode of an LED channel
 * **Raises:**
   **ValueError** – If invalid stack, channel or mode
 
-### getPowerLedMode(stack: int) → int
+### getPowerLedMode(stack: int)
 
 Get the power LED mode
 
@@ -152,7 +152,7 @@ Get the power LED mode
 * **Raises:**
   **ValueError** – If invalid stack
 
-### setPowerLedMode(stack: int, mode: int) → None
+### setPowerLedMode(stack: int, mode: int)
 
 Set the power LED mode
 
@@ -162,7 +162,7 @@ Set the power LED mode
 * **Raises:**
   **ValueError** – If invalid stack or mode
 
-### wdtReload(stack: int) → None
+### wdtReload(stack: int)
 
 Reload watchdog timer
 
@@ -171,7 +171,7 @@ Reload watchdog timer
 * **Raises:**
   **ValueError** – If invalid stack
 
-### getWdtPeriod(stack: int) → int
+### getWdtPeriod(stack: int)
 
 Get watchdog period in seconds
 
@@ -184,7 +184,7 @@ Get watchdog period in seconds
 * **Raises:**
   **ValueError** – If invalid stack
 
-### setWdtPeriod(stack: int, period: int) → None
+### setWdtPeriod(stack: int, period: int)
 
 Set watchdog period in seconds
 
@@ -194,7 +194,7 @@ Set watchdog period in seconds
 * **Raises:**
   **ValueError** – If invalid stack or period
 
-### getWdtInitPeriod(stack: int) → int
+### getWdtInitPeriod(stack: int)
 
 Get watchdog initial period in seconds
 
@@ -207,7 +207,7 @@ Get watchdog initial period in seconds
 * **Raises:**
   **ValueError** – If invalid stack
 
-### setWdtInitPeriod(stack: int, period: int) → None
+### setWdtInitPeriod(stack: int, period: int)
 
 Set watchdog initial period in seconds
 
@@ -217,7 +217,7 @@ Set watchdog initial period in seconds
 * **Raises:**
   **ValueError** – If invalid stack or period
 
-### getWdtOffPeriod(stack: int) → int
+### getWdtOffPeriod(stack: int)
 
 Get watchdog off period in seconds
 
@@ -230,7 +230,7 @@ Get watchdog off period in seconds
 * **Raises:**
   **ValueError** – If invalid stack
 
-### setWdtOffPeriod(stack: int, period: int) → None
+### setWdtOffPeriod(stack: int, period: int)
 
 Set watchdog off period in seconds
 
@@ -240,7 +240,7 @@ Set watchdog off period in seconds
 * **Raises:**
   **ValueError** – If invalid stack or period
 
-### getWdtResetCount(stack: int) → int
+### getWdtResetCount(stack: int)
 
 Get watchdog reset counter value
 
@@ -253,7 +253,7 @@ Get watchdog reset counter value
 * **Raises:**
   **ValueError** – If invalid stack
 
-### getOpto(stack: int, channel: int) → int
+### getOpto(stack: int, channel: int)
 
 Get the state of an opto-isolated input
 
@@ -267,7 +267,7 @@ Get the state of an opto-isolated input
 * **Raises:**
   **ValueError** – If invalid stack or channel
 
-### getOptoAll(stack: int) → int
+### getOptoAll(stack: int)
 
 Get all opto-isolated input states
 
@@ -280,7 +280,7 @@ Get all opto-isolated input states
 * **Raises:**
   **ValueError** – If invalid stack
 
-### getOptoEdge(stack: int, channel: int, edge: int) → int
+### getOptoEdge(stack: int, channel: int, edge: int)
 
 Get edge detection state for an opto-isolated input
 
@@ -295,7 +295,7 @@ Get edge detection state for an opto-isolated input
 * **Raises:**
   **ValueError** – If invalid stack, channel or edge
 
-### setOptoEdge(stack: int, channel: int, edge: int, state: int) → None
+### setOptoEdge(stack: int, channel: int, edge: int, state: int)
 
 Set edge detection for an opto-isolated input
 
@@ -307,7 +307,7 @@ Set edge detection for an opto-isolated input
 * **Raises:**
   **ValueError** – If invalid stack, channel, edge or state
 
-### getOptoCount(stack: int, channel: int) → int
+### getOptoCount(stack: int, channel: int)
 
 Get the counter value for an opto-isolated input
 
@@ -321,7 +321,7 @@ Get the counter value for an opto-isolated input
 * **Raises:**
   **ValueError** – If invalid stack or channel
 
-### resetOptoCount(stack: int, channel: int) → None
+### resetOptoCount(stack: int, channel: int)
 
 Reset the counter for an opto-isolated input
 
@@ -331,7 +331,7 @@ Reset the counter for an opto-isolated input
 * **Raises:**
   **ValueError** – If invalid stack or channel
 
-### getOptoEncoder(stack: int, channel: int) → int
+### getOptoEncoder(stack: int, channel: int)
 
 Get encoder mode for an opto-isolated input pair
 
@@ -345,7 +345,7 @@ Get encoder mode for an opto-isolated input pair
 * **Raises:**
   **ValueError** – If invalid stack or channel
 
-### setOptoEncoder(stack: int, channel: int, state: int) → None
+### setOptoEncoder(stack: int, channel: int, state: int)
 
 Set encoder mode for an opto-isolated input pair
 
@@ -356,7 +356,7 @@ Set encoder mode for an opto-isolated input pair
 * **Raises:**
   **ValueError** – If invalid stack, channel or state
 
-### getOptoFrequency(stack: int, channel: int) → int
+### getOptoFrequency(stack: int, channel: int)
 
 Get frequency measurement for an opto-isolated input
 
@@ -370,7 +370,7 @@ Get frequency measurement for an opto-isolated input
 * **Raises:**
   **ValueError** – If invalid stack or channel
 
-### getOptoPWM(stack: int, channel: int) → float
+### getOptoPWM(stack: int, channel: int)
 
 Get PWM duty cycle measurement for an opto-isolated input
 
@@ -383,5 +383,53 @@ Get PWM duty cycle measurement for an opto-isolated input
   float
 * **Raises:**
   **ValueError** – If invalid stack or channel
+
+### setOptoInterrupt(stack: int, channel: int, enabled: bool)
+
+Enable/disable interrupts for an opto-isolated input
+
+* **Parameters:**
+  * **stack** – Board stack level (0-7)
+  * **channel** – Input channel number (1-16)
+  * **enabled** – True to enable interrupts, False to disable
+* **Raises:**
+  **ValueError** – If invalid parameters
+
+### getOptoInterrupt(stack: int, channel: int)
+
+Get interrupt enable state for an opto-isolated input
+
+* **Parameters:**
+  * **stack** – Board stack level (0-7)
+  * **channel** – Input channel number (1-16)
+* **Returns:**
+  True if interrupts enabled, False if disabled
+* **Return type:**
+  bool
+* **Raises:**
+  **ValueError** – If invalid parameters
+
+### setOptoInterruptMask(stack: int, mask: int)
+
+Set interrupt enable mask for all opto-isolated inputs
+
+* **Parameters:**
+  * **stack** – Board stack level (0-7)
+  * **mask** – 16-bit mask (1=enabled, 0=disabled)
+* **Raises:**
+  **ValueError** – If invalid parameters
+
+### getOptoInterruptMask(stack: int)
+
+Get interrupt enable mask for all opto-isolated inputs
+
+* **Parameters:**
+  **stack** – Board stack level (0-7)
+* **Returns:**
+  16-bit mask with interrupt enable states
+* **Return type:**
+  int
+* **Raises:**
+  **ValueError** – If invalid stack
 
 <!-- vi:se ts=4 sw=4 et: -->
