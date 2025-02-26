@@ -14,9 +14,9 @@ with open("README.md", 'r') as f:
 
 from setuptools import setup, find_packages
 setup(
-    name='SM16inpind',
+    name='sm16inpind',
     packages=find_packages(),
-    version='1.1.1',
+    version='1.1.2',
     license='MIT',
     description='Library to control 16inpind Automation Card',
     long_description=long_description,
