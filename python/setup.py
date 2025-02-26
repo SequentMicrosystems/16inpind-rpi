@@ -16,7 +16,7 @@ from setuptools import setup, find_packages
 setup(
     name='sm16inpind',
     packages=find_packages(),
-    version='1.1.2',
+    version='1.1.4',
     license='MIT',
     description='Library to control 16inpind Automation Card',
     long_description=long_description,

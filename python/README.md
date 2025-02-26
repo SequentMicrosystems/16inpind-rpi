@@ -331,6 +331,30 @@ Reset the counter for an opto-isolated input
 * **Raises:**
   **ValueError** – If invalid stack or channel
 
+### getOptoEncCount(stack: int, channel: int)
+
+Get the counter value for an opto-isolated encoded input
+
+* **Parameters:**
+  * **stack** – Board stack level (0-7)
+  * **channel** – Input channel number (1-16)
+* **Returns:**
+  Counter value (0-65535)
+* **Return type:**
+  int
+* **Raises:**
+  **ValueError** – If invalid stack or channel
+
+### resetOptoEncCount(stack: int, channel: int)
+
+Reset the counter for an opto-isolated encoded input
+
+* **Parameters:**
+  * **stack** – Board stack level (0-7)
+  * **channel** – Input channel number (1-16)
+* **Raises:**
+  **ValueError** – If invalid stack or channel
+
 ### getOptoEncoder(stack: int, channel: int)
 
 Get encoder mode for an opto-isolated input pair
