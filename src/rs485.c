@@ -93,6 +93,11 @@ int doCfg485Write(int argc, char *argv[])
 		{
 			return ARG_CNT_ERR;
 		}
+		if (aux != 1)
+		{
+			printf("Modbus mode must be [0(disabled)/1(Modbus RTU)]\n");
+			return ARG_RANGE_ERROR;
+		}
 		settings.mbType = 1;
 		aux = atoi(argv[4]); // Modbus ID
 		if (aux < 1 || aux > 254)
