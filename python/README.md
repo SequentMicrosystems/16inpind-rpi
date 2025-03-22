@@ -1,6 +1,25 @@
-# Welcome to SM16inpind’s documentation!
+# Welcome to the SM16inpind Documentation!
 
-# Install
+SM16inpind is a Python package that enables you to control the
+[Sixteen LV Digital Inputs](https://sequentmicrosystems.com/products/sixteen-lv-digital-inputs-card-for-raspberry-pi)
+for Raspberry Pi.
+
+This documentation provides detailed instructions on installation, usage, and troubleshooting.
+
+If you experience any issues, please refer to the [Troubleshooting](#troubleshooting) section.
+
+**Note:** On older systems, the pip command may default to Python 2.7, which is no longer supported. In these cases, use pip3 instead.
+
+If you are working in an externally managed environment, we recommend creating a virtual environment to manage dependencies:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+# Installation
+
+Install the SM16inpind package using one of the following commands:
 
 ```bash
 sudo pip install SM16inpind
@@ -12,7 +31,9 @@ or
 sudo pip3 install SM16inpind
 ```
 
-# Update
+# Updating an Existing Installation
+
+To update SM16inpind to the latest version, run:
 
 ```bash
 sudo pip install SM16inpind -U
@@ -24,18 +45,32 @@ or
 sudo pip3 install SM16inpind -U
 ```
 
-# Initiate class
+# Quick Start Example
+
+Start using SM16inpind by launching a Python interpreter:
 
 ```console
 $ python
-Python 3.11.8 (main, Feb 12 2024, 14:50:05) [GCC 13.2.1 20230801] on linux
+Python 3.11.8 (main, Feb 12 2024, 14:50:05) [GCC 13.2.1 20230801] on Linux
 Type "help", "copyright", "credits" or "license" for more information.
 >>> import lib16inpind
 >>> lib16inpind.getLed(0, 1)
 >>>
 ```
 
-# Documentation
+<!-- Start using SM16inpind by launching a Python interpreter and initiate the class: -->
+<!-- .. code-block:: console -->
+<!-- $ python -->
+<!-- Python 3.11.8 (main, Feb 12 2024, 14:50:05) [GCC 13.2.1 20230801] on Linux -->
+<!-- Type "help", "copyright", "credits" or "license" for more information. -->
+<!-- >>> import multiio -->
+<!-- >>> mu = multiio.SMmultiio() -->
+<!-- >>> mu.set_u_out(0, 1) -->
+<!-- >>> -->
+
+# Full Documentation
+
+For a comprehensive guide to the package’s functionality, please refer to the contents below:
 
 <a id="module-lib16inpind"></a>
 
@@ -331,6 +366,30 @@ Reset the counter for an opto-isolated input
 * **Raises:**
   **ValueError** – If invalid stack or channel
 
+### getOptoEncCount(stack: int, channel: int)
+
+Get the counter value for an opto-isolated encoder input
+
+* **Parameters:**
+  * **stack** – Board stack level (0-7)
+  * **channel** – Input channel number (1-16)
+* **Returns:**
+  Counter value (0-65535)
+* **Return type:**
+  int
+* **Raises:**
+  **ValueError** – If invalid stack or channel
+
+### resetOptoEncCount(stack: int, channel: int)
+
+Reset the counter for an opto-isolated encoder input
+
+* **Parameters:**
+  * **stack** – Board stack level (0-7)
+  * **channel** – Input channel number (1-16)
+* **Raises:**
+  **ValueError** – If invalid stack or channel
+
 ### getOptoEncoder(stack: int, channel: int)
 
 Get encoder mode for an opto-isolated input pair
@@ -431,5 +490,33 @@ Get interrupt enable mask for all opto-isolated inputs
   int
 * **Raises:**
   **ValueError** – If invalid stack
+
+<a id="troubleshooting"></a>
+
+# Troubleshooting
+
+If you encounter any problems, first verify that your package is up to date. To check the installed version, run:
+
+```bash
+pip freeze | grep -i SM16inpind
+```
+
+If you installed SM16inpind with pip3, use:
+
+```bash
+pip3 freeze | grep -i SM16inpind
+```
+
+Additionally, if you are using a virtual environment, ensure it is activated by checking the Python interpreter’s path:
+
+```bash
+which python
+```
+
+If the output does not show the path to your virtual environment, activate it with:
+
+```bash
+source /path/to/.venv/bin/activate
+```
 
 <!-- vi:se ts=4 sw=4 et: -->

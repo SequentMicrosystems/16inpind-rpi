@@ -512,7 +512,7 @@ def getOpto(stack: int, channel: int) -> int:
     hw_add = DEVICE_ADDRESS + stack
     
     try:
-        val = bus.read_word_data(hw_add, I2C_MEM.OPTO)
+        val = bus.read_word_data(hw_add, I2C_MEM.OPTO_IN)
     except Exception as e:
         bus.close()
         raise Exception(e)
@@ -540,7 +540,7 @@ def getOptoAll(stack: int) -> int:
     hw_add = DEVICE_ADDRESS + stack
     
     try:
-        val = bus.read_word_data(hw_add, I2C_MEM.OPTO)
+        val = bus.read_word_data(hw_add, I2C_MEM.OPTO_IN)
     except Exception as e:
         bus.close()
         raise Exception(e)
@@ -678,6 +678,64 @@ def resetOptoCount(stack: int, channel: int) -> None:
         raise Exception(e)
     bus.close()
 
+def getOptoEncCount(stack: int, channel: int) -> int:
+    """Get the counter value for an opto-isolated encoder input
+    
+    Args:
+        stack: Board stack level (0-7)
+        channel: Input channel number (1-16)
+    
+    Returns:
+        int: Counter value (0-65535)
+        
+    Raises:
+        ValueError: If invalid stack or channel
+    """
+    if stack < 0 or stack > 7:
+        raise ValueError('Invalid stack level')
+    if channel < 1 or channel > 16:
+        raise ValueError('Invalid channel')
+        
+    stack = 0x07 ^ stack
+    bus = smbus2.SMBus(1)
+    hw_add = DEVICE_ADDRESS + stack
+    
+    try:
+        val = bus.read_word_data(hw_add, I2C_MEM.OPTO_ENC_COUNT_ADD + (channel-1)*2)
+    except Exception as e:
+        bus.close()
+        raise Exception(e)
+    bus.close()
+    
+    return val
+
+def resetOptoEncCount(stack: int, channel: int) -> None:
+    """Reset the counter for an opto-isolated encoder input
+    
+    Args:
+        stack: Board stack level (0-7)
+        channel: Input channel number (1-16)
+    
+    Raises:
+        ValueError: If invalid stack or channel
+    """
+    if stack < 0 or stack > 7:
+        raise ValueError('Invalid stack level')
+    if channel < 1 or channel > 16:
+        raise ValueError('Invalid channel')
+        
+    stack = 0x07 ^ stack
+    bus = smbus2.SMBus(1)
+    hw_add = DEVICE_ADDRESS + stack
+    
+    try:
+        bus.write_word_data(hw_add, I2C_MEM.OPTO_ENC_CNT_RST, 0)
+    except Exception as e:
+        bus.close()
+        raise Exception(e)
+    bus.close()
+
+
 def getOptoEncoder(stack: int, channel: int) -> int:
     """Get encoder mode for an opto-isolated input pair
     
@@ -701,7 +759,7 @@ def getOptoEncoder(stack: int, channel: int) -> int:
     hw_add = DEVICE_ADDRESS + stack
     
     try:
-        val = bus.read_word_data(hw_add, I2C_MEM.OPTO_ENC_ENABLE_ADD)
+        val = bus.read_word_data(hw_add, I2C_MEM.OPTO_ENC_ENABLE)
     except Exception as e:
         bus.close()
         raise Exception(e)
@@ -732,12 +790,12 @@ def setOptoEncoder(stack: int, channel: int, state: int) -> None:
     hw_add = DEVICE_ADDRESS + stack
     
     try:
-        val = bus.read_word_data(hw_add, I2C_MEM.OPTO_ENC_ENABLE_ADD)
+        val = bus.read_word_data(hw_add, I2C_MEM.OPTO_ENC_ENABLE)
         if state:
             val |= (1 << ((channel-1)//2))
         else:
             val &= ~(1 << ((channel-1)//2))
-        bus.write_word_data(hw_add, I2C_MEM.OPTO_ENC_ENABLE_ADD, val)
+        bus.write_word_data(hw_add, I2C_MEM.OPTO_ENC_ENABLE, val)
     except Exception as e:
         bus.close()
         raise Exception(e)
