@@ -17,5 +17,5 @@ Or if you are using a 64-bits OS
 ```
 
 If you already cloned the repository, skip the first step.
-The command will download the newest firmware version from our server and write it  to the board. 
-The stack level of the board must be provided as a parameter.
+The command will download the newest firmware version from our server and write it to the board. 
+The stack level of the board must be provided as a parameter. Make sure no script or program accesses the I2C port during the update process.
