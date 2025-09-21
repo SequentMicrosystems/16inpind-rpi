@@ -2,11 +2,13 @@
 #include "comm.h"
 #include "data.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 
 #define VERSION_BASE	(int)1
 #define VERSION_MAJOR	(int)1
-#define VERSION_MINOR	(int)2
+#define VERSION_MINOR	(int)3
 
 
 static int doHelp(int argc, char *argv[]);
@@ -185,4 +187,40 @@ static int doList(int argc, char *argv[])
 	}
 	printf("\n");
 	return 0;
+}
+
+static int doBoard(int argc, char *argv[]);
+const CliCmdType CMD_BOARD =
+	{
+		"board",
+		2,
+		&doBoard,
+		"  board:	        Read card firmware version \n",
+		"  Usage:           16inpind <id> board <channel>\n"
+		"",
+		"  Example:         16inpind 0 board; Read firmware version on Board #0\n"};
+
+static int doBoard(int argc, char *argv[])
+{
+	int dev = 0;
+	uint8_t buff[8];
+
+	dev = doBoardInit(atoi(argv[1]));
+	if (dev <= 0)
+	{
+		return ERROR;
+	}
+	if (argc == 3)
+	{
+		if (ERROR == i2cMem8Read(dev, I2C_MEM_REVISION_MAJOR_ADD, buff, 2))
+		{
+			return ERROR;
+		}
+		printf("Sixteen LV Digital Inputs firmware version %d.%02d\n", (int)buff[0], (int)buff[1]);
+	}
+	else
+	{
+		return ERROR;
+	}
+	return OK;
 }
