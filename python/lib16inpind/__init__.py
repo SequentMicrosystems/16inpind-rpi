@@ -10,6 +10,7 @@ WDT_RESET_SIGNATURE = data.WDT_RESET_SIGNATURE
 # Pin masks for 16-bit operations  
 pinMask = [0x8000, 0x4000, 0x2000, 0x1000, 0x0800, 0x0400, 0x0200, 0x0100, 
            0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01]
+optoMask = [0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x0100, 0x0200, 0x0400, 0x0800, 0x1000, 0x2000, 0x4000, 0x8000]
 
 
 def readCh(stack, channel):
@@ -518,7 +519,7 @@ def getOpto(stack: int, channel: int) -> int:
         raise Exception(e)
     bus.close()
     
-    return 1 if val & pinMask[channel-1] else 0
+    return 1 if val & optoMask[channel-1] else 0
 
 def getOptoAll(stack: int) -> int:
     """Get all opto-isolated input states
@@ -581,7 +582,7 @@ def getOptoEdge(stack: int, channel: int, edge: int) -> int:
         raise Exception(e)
     bus.close()
     
-    return 1 if val & pinMask[channel-1] else 0
+    return 1 if val & optoMask[channel-1] else 0
 
 def setOptoEdge(stack: int, channel: int, edge: int, state: int) -> None:
     """Set edge detection for an opto-isolated input
@@ -612,9 +613,9 @@ def setOptoEdge(stack: int, channel: int, edge: int, state: int) -> None:
         addr = I2C_MEM.OPTO_IT_FALLING if edge == 0 else I2C_MEM.OPTO_IT_RISING
         val = bus.read_word_data(hw_add, addr)
         if state:
-            val |= pinMask[channel-1]
+            val |= optoMask[channel-1]
         else:
-            val &= ~pinMask[channel-1]
+            val &= ~optoMask[channel-1]
         bus.write_word_data(hw_add, addr, val)
     except Exception as e:
         bus.close()
@@ -889,9 +890,9 @@ def setOptoInterrupt(stack: int, channel: int, enabled: bool) -> None:
         
         # Modify bit for specified channel
         if enabled:
-            val |= pinMask[channel-1] 
+            val |= optoMask[channel-1] 
         else:
-            val &= ~pinMask[channel-1]
+            val &= ~optoMask[channel-1]
             
         # Write back updated mask    
         bus.write_word_data(hw_add, I2C_MEM.EXTI_EN, val)
@@ -932,7 +933,7 @@ def getOptoInterrupt(stack: int, channel: int) -> bool:
     bus.close()
     
     # Return true if bit is set for channel
-    return bool(val & pinMask[channel-1])
+    return bool(val & optoMask[channel-1])
 
 def setOptoInterruptMask(stack: int, mask: int) -> None:
     """Set interrupt enable mask for all opto-isolated inputs
