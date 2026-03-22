@@ -12,16 +12,21 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+#include <semaphore.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 #include "16in.h"
 #include "comm.h"
 
 #define VERSION_BASE	(int)1
 #define VERSION_MAJOR	(int)1
-#define VERSION_MINOR	(int)2
+#define VERSION_MINOR	(int)3
 
 #define UNUSED(X) (void)X      /* To avoid gcc/g++ warnings */
 #define CMD_ARRAY_SIZE	7
+
+#define THREAD_SAFE
 
 const uint16_t pinMask[16] = { 0x8000, 0x4000, 0x2000, 0x1000, 0x0800, 0x0400, 0x0200, 0x0100, 
 			      0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01};
@@ -158,6 +163,11 @@ int main(int argc, char *argv[])
 		usage();
 		return -1;
 	}
+	#ifdef THREAD_SAFE
+	sem_t *semaphore = sem_open("/SMI2C_SEM", O_CREAT, 0000666, 1);//sem_open("/SMI2C_SEM", O_CREAT);
+	int semVal = 2;
+	sem_wait(semaphore);
+#endif
 	while (NULL != gCmdArray[i])
 	{
 		if ( (gCmdArray[i]->name != NULL) && (gCmdArray[i]->namePos < argc))
@@ -165,6 +175,13 @@ int main(int argc, char *argv[])
 			if (strcasecmp(argv[gCmdArray[i]->namePos], gCmdArray[i]->name) == 0)
 			{
 				gCmdArray[i]->pFunc(argc, argv);
+#ifdef THREAD_SAFE
+				sem_getvalue(semaphore, &semVal);
+				if (semVal < 1)
+				{
+					sem_post(semaphore);
+				}
+#endif
 				return 0;
 			}
 		}
@@ -172,6 +189,12 @@ int main(int argc, char *argv[])
 	}
 	printf("Invalid command option\n");
 	usage();
-
+#ifdef THREAD_SAFE
+	sem_getvalue(semaphore, &semVal);
+	if (semVal < 1)
+	{
+		sem_post(semaphore);
+	}
+#endif
 	return -1;
 }
