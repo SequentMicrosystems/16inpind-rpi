@@ -15,13 +15,15 @@
 #include <semaphore.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <time.h>
+#include <errno.h>
 
 #include "16in.h"
 #include "comm.h"
 
 #define VERSION_BASE	(int)1
 #define VERSION_MAJOR	(int)1
-#define VERSION_MINOR	(int)3
+#define VERSION_MINOR	(int)4
 
 #define UNUSED(X) (void)X      /* To avoid gcc/g++ warnings */
 #define CMD_ARRAY_SIZE	7
@@ -153,6 +155,57 @@ static int doRead(int argc, char *argv[])
 	}
 	return 0;
 }
+#define TIMEOUT_S 5
+//#define DEBUG_SEM
+int waitForI2C(sem_t *sem)
+{
+  int semVal = 2;
+  struct timespec ts;
+  int s = 0;
+  
+#ifdef DEBUG_SEM
+	sem_getvalue(sem, &semVal);
+	printf("Semaphore initial value %d\n", semVal);
+	semVal = 2;
+#endif
+	while (semVal > 0)
+	{
+    if (clock_gettime(CLOCK_REALTIME, &ts) == -1)
+    {
+        /* handle error */
+        printf("Fail to read time \n");
+        return -1;
+    }
+    ts.tv_sec += TIMEOUT_S;
+    while ((s = sem_timedwait(sem, &ts)) == -1 && errno == EINTR)
+               continue;       /* Restart if interrupted by handler */
+		sem_getvalue(sem, &semVal);
+	}
+#ifdef DEBUG_SEM
+	sem_getvalue(sem, &semVal);
+	printf("Semaphore after wait %d\n", semVal);
+#endif
+  return 0;
+}
+
+int releaseI2C(sem_t *sem)
+{
+  int semVal = 2;
+  sem_getvalue(sem, &semVal);
+	if (semVal < 1)
+	{
+		 if (sem_post(sem) == -1)
+		 {
+			 printf("Fail to post SMI2C_SEM \n");
+       return -1;
+		 }
+	}
+#ifdef DEBUG_SEM
+	sem_getvalue(sem, &semVal);
+	printf("Semaphore after post %d\n", semVal);
+#endif
+return 0;
+}
 
 int main(int argc, char *argv[])
 {
@@ -163,10 +216,9 @@ int main(int argc, char *argv[])
 		usage();
 		return -1;
 	}
-	#ifdef THREAD_SAFE
+#ifdef THREAD_SAFE
 	sem_t *semaphore = sem_open("/SMI2C_SEM", O_CREAT, 0000666, 1);//sem_open("/SMI2C_SEM", O_CREAT);
-	int semVal = 2;
-	sem_wait(semaphore);
+	waitForI2C(semaphore);
 #endif
 	while (NULL != gCmdArray[i])
 	{
@@ -176,12 +228,9 @@ int main(int argc, char *argv[])
 			{
 				gCmdArray[i]->pFunc(argc, argv);
 #ifdef THREAD_SAFE
-				sem_getvalue(semaphore, &semVal);
-				if (semVal < 1)
-				{
-					sem_post(semaphore);
-				}
+				releaseI2C(semaphore);
 #endif
+
 				return 0;
 			}
 		}
@@ -190,11 +239,7 @@ int main(int argc, char *argv[])
 	printf("Invalid command option\n");
 	usage();
 #ifdef THREAD_SAFE
-	sem_getvalue(semaphore, &semVal);
-	if (semVal < 1)
-	{
-		sem_post(semaphore);
-	}
+	releaseI2C(semaphore);
 #endif
 	return -1;
 }
