@@ -1,5 +1,6 @@
 import smbus2
 from typing import Union, Optional
+import struct
 
 import lib16inpind.lib16inpind_data as data
 
@@ -645,7 +646,9 @@ def getOptoCount(stack: int, channel: int) -> int:
     hw_add = DEVICE_ADDRESS + stack
     
     try:
-        val = bus.read_word_data(hw_add, I2C_MEM.OPTO_EDGE_COUNT_ADD + (channel-1)*2)
+        buff = bus.read_i2c_block_data(hw_add, I2C_MEM.OPTO_EDGE_COUNT_ADD + (channel-1)*4, 4)
+        unpack_val = struct.unpack('i', bytearray(buff))
+        val = unpack_val[0]
     except Exception as e:
         bus.close()
         raise Exception(e)
@@ -702,7 +705,9 @@ def getOptoEncCount(stack: int, channel: int) -> int:
     hw_add = DEVICE_ADDRESS + stack
     
     try:
-        val = bus.read_word_data(hw_add, I2C_MEM.OPTO_ENC_COUNT_ADD + (channel-1)*2)
+        buff = bus.read_i2c_block_data(hw_add, I2C_MEM.OPTO_ENC_COUNT_ADD + (channel - 1) * 4, 4)
+        unpack_val = struct.unpack('i', bytearray(buff))
+        val = unpack_val[0]
     except Exception as e:
         bus.close()
         raise Exception(e)
