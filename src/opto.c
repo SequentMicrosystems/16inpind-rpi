@@ -71,6 +71,7 @@ int optoGet(int dev, int *val)
 	{
 		return ERROR ;
 	}
+	memset(val, 0, sizeof(int));
 	memcpy(val, buff, 2);
 	return OK ;
 }
