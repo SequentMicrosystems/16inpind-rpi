@@ -2,7 +2,7 @@
 
 # 16inpind-rpi
 
-This is the command line and Python library to control the [Sequent Microsystems 16-Inputs Card for Raspberry PI](https://sequentmicrosystems.com/products/sixteen-lv-digital-inputs-card-for-raspberry-pi). This 8-layer stackable card contains 16 optically isolated digital inputs with reverse polarity protection.
+This is the command line and Python library to control the [Sequent Microsystems Sixteen LV Digital Inputs 8-Layer Stackable HAT for Raspberry Pi](https://sequentmicrosystems.com/products/sixteen-lv-digital-inputs-card-for-raspberry-pi). This 8-layer stackable card contains 16 optically isolated digital inputs with reverse polarity protection.
 
 To use this card, enable Raspberry Pi I2C communication
 ```bash
